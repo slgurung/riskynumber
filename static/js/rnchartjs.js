@@ -396,8 +396,9 @@ function realtime_quote(data){
     //$("#lv").text( "vol: " + latestVolume );
     // don't need to convert? already converted to current tz
     $("#lt").text("@"+latestTime);
-    $("#lh").text("52W Range: ["+ week52Low + " - " + week52High+ "]" );
     
+    $("#lh").text("52W Range: ["+ week52Low + " - " + week52High+ "]" );
+    $("#lh").css( 'color', '#408000');
     
   }else{
     $("#tik").text( symbol +":");
@@ -408,7 +409,7 @@ function realtime_quote(data){
 
 }
 
-function stockNews(stk_news){
+function create_stockNews_list(stk_news){
   //var news = {{ stockNews|safe }};
   $("#stockNewsTitle").html('');
   var ul = document.createElement("UL");
@@ -427,7 +428,7 @@ function stockNews(stk_news){
   }
 }
 //maybe don't need this
-function marketNews(mkt_news){
+function create_marketNewslist(mkt_news){
   //var news = {{ businessNews|safe }};
   $("#business_news").html('');
   var ul = document.createElement("UL");
@@ -585,7 +586,7 @@ $(document).ready(function() {
             }else{
                 hIntradayChart(dateVal, closeVal, vol, min, max);
             }
-        }else{
+        }else if(id == "filingList"){
             chartType = "filingList";
             filingTab.style.height = lineTab.style.height;
 
@@ -621,7 +622,70 @@ $(document).ready(function() {
                     });
                 }
             });
-        }
+        }else if(id == "stkNews"){
+            chartType = "stkNews";
+            newsTab.style.height = lineTab.style.height;
+
+            $.ajax({
+                url: "/newsmedia/stock_news/",
+                type: "POST",
+                data: {
+                    'ticker': window.symbol,
+                },
+                dataType: 'json',
+                success: function(data){
+                    if (data.result == "gotIt"){
+                        var news_list = data.news_list;
+                        var news_num = news_list.length;
+                        var html_str ="<table class='table table-striped news_table'><tr><th colspan='2' "
+                            html_str += "style='text-align:center; color:rgb(0,170,0);'> <h5>Recent " + 
+                                        news_num + " News Headlines</h5></th></tr>";
+                       
+                        for(i=0; i < news_num; i++){
+                            var num = i+1;
+                            html_str += "<tr><td style='padding-left:20px;'>"+ num +"</td>";
+                            html_str += "<td style='padding-left:20px;'><a class='newsSource' href=" + news_list[i]["link"] +
+                                       " target=_blank>" + news_list[i]["title"] + "</a></td></tr>";
+
+                        }
+                        html_str += "</table>";
+                    }else if(data.result == "invalid"){
+                        var html_str = "<h3 style='text-align:center;'>There are no News for stock index!</h3>";
+                    }else{
+                        var html_str = "<h3 style='text-align:center;'>Couldn't find news for the symbol!</h3>";
+                    }
+                    $("#news").html(html_str);
+                    $(".newsSource").click(function(){
+                        $("#suggestion").focus();
+                    });
+                }
+            });
+
+
+
+
+
+          // chartType = "stkNews";
+          // newsTab.style.height = lineTab.style.height;
+          // var news_num = stockNews.length;
+          
+          // var html_str =("<table class='table table-striped news_table'><tr><th colspan='2' style='text-align:center;'> Recent " 
+          //   + news_num + " news</th></tr>");
+          //     html_str += "<tr><th></th><th>Headlines</th></tr>";
+          //     for(i=0; i < news_num; i++){
+          //         var num = i+1;
+          //         html_str += "<tr><td style='padding-left:20px;'>"+ num +"</td>";
+          //         html_str += "<td style='padding-left:20px;'><a class='newsSource' href=" + stockNews[i]["link"] + " target=_blank>" +
+          //                     stockNews[i]["title"] + "</a></td></tr>";
+
+          //     }
+          //     html_str += "</table>";
+
+          // $("#news").html(html_str);
+          // $(".newsSource").click(function(){
+          //               $("#suggestion").focus();
+          //           });          
+      }
     });
 
     //this is for different chartPeriod

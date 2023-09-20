@@ -32,7 +32,10 @@ urlpatterns = [
     path('accounts/', include('accounts.urls', namespace='accounts')),
     path('stocks/', include('stocks.urls', namespace='stocks')),
     path('filings/', include('filings.urls', namespace='filings')),
+    ## for ajax call
+    path('newsmedia/', include('newsmedia.urls', namespace='newsmedia')),
     path('watchlist/', include('watchlist.urls', namespace='watchlist')),
     path('about/', views.AboutView.as_view(), name="about"),
+    path('disclaimer/', views.DisclaimerView.as_view(), name="disclaimer"),
     path('howto/', views.HowtoView.as_view(), name="howto"),
 ]

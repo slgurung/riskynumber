@@ -392,32 +392,32 @@
       {% block watchlist_block %}
       {% endblock %}
     </div>
-    <div class="container contentDiv" id="news_div" style="max-width:1600px;color:rgb(0, 153, 204);">
-        <div class="row">
-            <div class="col-md-6" id="stock_news">
-                {% block stock_news %}
-                {% endblock %}
-            </div>
-            <div class="col-md-6" id="business_news">
-                {% block business_news %}
-                {% endblock %}
-            </div>
-        </div>
-        <hr>
-    </div>
+   
     <footer class="container contentDiv" style="max-width:1600px;background-color:white;min-height:100px;">
       <div class="" style="background-color: rgb(0, 153, 204);padding:25px 0px 0px 0px;border-radius:10px 10px 10px 10px;
-                           height:300px;">
-        <div  style="background-color:white; padding:10px 20px 10px 20px;border-radius:50px 50px 50px 50px; ">
-            <div>
+                           height:310px;">
+          <div  style="background-color:white; padding:10px 20px 10px 20px;border-radius:50px 50px 50px 50px; ">
+            
               <ul class="list-inline" style="margin: 0px 0px 0px 0px;">
                 <li> <a href="{% url 'about' %}"><h5 class="h5-font">ABOUT</h5></a></li>
-                <li style="color:#00b8ff; font-size: 1.5em;"> &#9474; </li>
+                <li style="color:#00b8ff; font-size: 1.5em;"> &#9474 </li>
                 <li> <a href="{% url 'howto' %}"><h5 class="h5-font">HOW TO</h5></a></li>
               </ul>
+                       
+          </div>
+
+          <div  style="padding-top:10px; ">
+            <div style="padding:10px 30px 10px 30px; color: azure;"><span style="font-size: 14px;color: #5a0606;">DISCLAIMER:</span>
+              The informations contained in this website should not be construed as an offer to buy or sell or a 
+              solicitation of an offer to buy or sell any security or instrument or to participate in any 
+              transaction or trading activity. RiskyNumber can't gaurantee the accuracy of financial data and 
+              other information you find in this platform and accept no liability with regards to the user's 
+              reliance on it. (<a href="{% url 'disclaimer' %}" style="color: rgb(45, 45, 235);">Read full Disclaimer</a>)
             </div>
-            <div  style="padding-top:0px;">
-              <h5 style="color: rgb(0, 153, 204); margin-bottom: 0px;">Find useful? Share it on:</h5>
+            <div style="display: flex; justify-content: center; padding-top:20px;">
+              <h5 style="color: rgb(103, 248, 90); margin-bottom: 0px;">Find useful? Share it on:</h5>
+            </div>
+            <div style="display: flex; justify-content: center;">
               <table>
                 <tr>
                   <td style="padding:0px 5px 3px 5px;">
@@ -430,31 +430,28 @@
                   </td>
                   <td style="text-align:center; padding:2px 5px 0px 0px;">
                     <div >
-                      <a href="https://twitter.com/intent/tweet?text=Stock Research"
-                        class="twitter-share-button fa fa-twitter"
-                        data-via="sgJomsom"
-                        data-size="small"
-                        data-show-count="true">
-                      </a>
-                      <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                        <a href="https://twitter.com/intent/tweet?text=Stock Research"
+                          class="twitter-share-button fa fa-twitter"
+                          data-via="sgJomsom"
+                          data-size="small"
+                          data-show-count="true">
+                        </a>
+                        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                     </div>
-                   </td>
-                   <td style="text-align:center; padding: 0px 0px 4px 0px;">
-                     <script src="//platform.linkedin.com/in.js" type="text/javascript">lang: en_US</script>
-                     <script type="IN/Share" data-url="https://www.linkedin.com/m/login/"></script>
-                   <td>
-               </tr>
+                  </td>
+                  <td style="text-align:center; padding: 0px 0px 0px 0px;">
+                    <script src="//platform.linkedin.com/in.js" type="text/javascript">lang: en_US</script>
+                    <script type="IN/Share" data-url="https://www.linkedin.com/m/login/"></script>
+                  </td>
+                </tr>
               </table>
-
-              <p style="color:rgb(64, 128, 191, .5); font-size:0.8em; padding:0px 50px 0px 50px;">
-                All brand icons and names are trademarks of their respective owners.
-              </p>
-
             </div>
-            <div>
-
+            <div style="display: flex; justify-content: center;">
+              <p style="color:rgb(255, 255, 254); font-size: 12px; padding:0px 0px 0px 0px;">
+                These brand icons and names are trademarks of their respective owners.</p>
+              </p>              
             </div>
-        </div>
+          </div>          
       </div>
 
     </footer>

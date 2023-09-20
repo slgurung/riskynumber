@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title_block %}
+    About
+{% endblock %}
+
+{% block chart_block %}
+    <script>
+        //this is to avoid calling charting fuction in js file
+        var data_type = {{data_type}};
+    </script>
+
+    <div style="padding: 50px 50px 100px 50px;">
+        <h2 style="padding-left:20px;">DISCLAIMER:</h2>
+        <blockquote>This web platform is being developed for financial informational purpose only and don't
+        provide financial advice in any form or shape. The informations contained in this website should not be construed as an offer to buy or sell or a 
+        solicitation of an offer to buy or sell any security or instrument or to participate in any transaction 
+        or trading activity.<br><br>
+        The stock price data and majority of other information are obtained from a third party APIs and various 
+        websites using APIs and web-scraping technologies based on Python. RiskyNumber can't gaurantee the accuracy of 
+        financial data and other information you find in this platform and accept no liability with regards to the user's
+        reliance on it. RiskyNumber don't recommend to buy or sell any of the stocks you may find in this website. RiskyNumber
+        don't have any investment relationship with any of these companies. This website and the information contained 
+        herein is not intended to be a source of advice or credit analysis with respect to the material presented, 
+        and the information and/or documents contained in this website do not constitute investment advice. 
+        <br><br>
+        
+        </blockquote>
+        <br><br>
+        
+        
+
+    </div>
+{% endblock %}
+
+{% block watchlist_block %}
+{% endblock %}

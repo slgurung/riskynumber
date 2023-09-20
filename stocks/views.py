@@ -8,7 +8,6 @@ import datetime as dt
 import requests
 
 from stocks.models import Stock
-from newsmedia.views import news
 from trends.views import  trending
 
 
@@ -134,8 +133,9 @@ class IntradayQuote(TemplateView):
         x = context['min'] * 0.9 + minClose * 0.1
 
         context['vol'] = list(((quote.volume - minVol) * ((y-x)/(maxVol - minVol))) + x)
-
-        context['businessNews'], context['stockNews'] = news(ticker) # save this for quick download
+        
+        # switched to ajax
+        #context['stockNews'] = news(ticker).to_dict('records') # save this for quick download
         #context_dict['stkIndexList']  = stkIndexList
 
         context['trending'] = list(trend_dict.keys())
@@ -240,7 +240,8 @@ class StkIndexView(TemplateView):
 
         context['vol'] = list(((quote.volume - minVol) * ((y-x)/(maxVol - minVol))) + x)
 
-        context['businessNews'], context['stockNews'] = news(ticker) # save this for quick download
+        # switched to ajax
+        #context['stockNews'] = news(ticker).to_dict('records') # save this for quick download
 
         context['trending'] = list(trend_dict.keys())
         context['trendType'] = list(trend_dict.values())
@@ -317,8 +318,7 @@ def intraday(request):
             x = data['min'] * 0.9 + minClose * 0.1
 
             data['vol'] = list(((quote.volume - minVol) * ((y-x)/(maxVol - minVol))) + x)
-            data['businessNews'], data['stockNews'] = news(ticker) # save this for quick download
-
+            
             # lprice = quote.tail(1).close[0]
             # ldate = quote.tail(1).index[0]
             qinfo = quote_info(ticker, quote)

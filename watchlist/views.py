@@ -13,7 +13,7 @@ from watchlist.models import WatchList
 from trends.views import trending
 from stocks.views import delay_intraday, daily, quote_info
 from stocks.models import Stock
-from newsmedia.views import news
+
 # Create your views here.
 
 stkIndex = {'^GSPC': 'S&P 500', '^DJI': 'Dow Jones Industrial' , '^IXIC': 'Nasdaq Composite'}
@@ -258,7 +258,8 @@ class WatchList_List(LoginRequiredMixin, generic.ListView):
 
         context['vol'] = list(((quote.volume - minVol) * ((y-x)/(maxVol - minVol))) + x)
 
-        context['businessNews'], context['stockNews'] = news(ticker) # save this for quick download
+        # switched to ajax
+        #context['businessNews'], context['stockNews'] = news(ticker) # save this for quick download
         #context_dict['stkIndexList']  = stkIndexList
 
         context['trending'] = list(trend_dict.keys())

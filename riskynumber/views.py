@@ -5,7 +5,6 @@ from trends.views import trending
 from stocks.views import daily , delay_intraday, quote_info
 
 from stocks.models import Stock
-from newsmedia.views import news
 
 from django.contrib.auth import get_user_model
 
@@ -15,6 +14,21 @@ User = get_user_model() # currently logged in user object in session
 
 class AboutView(TemplateView):
     template_name = "about.html"
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        try:
+            trend_dict = trending()#iex_trending()
+        except:
+            trend_dict = {}
+
+        context['trending'] = list(trend_dict.keys())
+        context['trendType'] = list(trend_dict.values())
+        context['data_type'] = "abouthowto"
+        return context
+    
+class DisclaimerView(TemplateView):
+    template_name = "disclaimer.html"
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -143,7 +157,8 @@ class HomePage(TemplateView):
 
         context['vol'] = list(((quote.volume - minVol) * ((y-x)/(maxVol - minVol))) + x)
 
-        context['businessNews'], context['stockNews'] = news(ticker) # save this for quick download
+        # switched to ajax
+        # context['stockNews'] = news(ticker).to_dict('records') # save this for quick download
         #context_dict['stkIndexList']  = stkIndexList
 
         context['trending'] = list(trend_dict.keys())
