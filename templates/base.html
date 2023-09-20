@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <title>
+        {% block title_block %}
+        {% endblock %}
+    </title>
+    <meta charset="utf-8">
+    <meta name="keywords" content="stock, stock quote, stock market, riskynumber, financial market, surya gurung">
+    <meta name="twitter:" content="stock, riskynumber, stock quote, financial market, surya gurung">
+    <meta  property="og:url" content="http://www.riskynumber.com" />
+    <meta  property="og:type" content="website" />
+    <meta  property="og:title" content="Bookmarks" />
+    <meta  property="og:description" content="Stock market quotes and research tools." />
+    <meta  property="og:image" content="http://www.riskynumber.com/static/images/favicon.ico" />
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% block css_block %}
+    {% endblock %}
+
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+
+    <!-- plotly js -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-1.43.2.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- custom css   -->
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" />
+    <link rel="stylesheet" href="{% static 'css/master.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/watchlist_style.css' %}" />
+
+    <style>
+        body {
+          padding:0px 0px 20px 0px;
+        }
+        div.contentDiv {
+          position:relative;
+          padding:5px 15px 0px 15px;
+        }
+
+        .modal-header, h4, .close {
+            background-color: #5cb85c;
+            color:white !important;
+            text-align: center;
+            font-size: 30px;
+          }
+
+        .modal-footer {
+            background-color: #f9f9f9;
+          }
+        #downcolor{
+            color: #ff0000;
+        }
+        #upcolor{
+            color: #009900;
+        }
+        .bst{
+          border-style: solid;
+          border-width: thin;
+        }
+        .filing_table{
+          color: rgb(0, 85, 128);
+        }
+        .fa {
+          padding: 20px;
+          font-size: 30px;
+          width: 50px;
+          text-align: center;
+          text-decoration: none;
+        }
+
+        .fa:hover {
+            opacity: 0.7;
+        }
+
+        .fa-facebook {
+          background: #3B5998;
+          color: white;
+        }
+
+        .fa-twitter {
+          background: #55ACEE;
+          color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2';
+      fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    </script>
+    <nav class="navbar navbar-default">
+      <div class="container" style="max-width:1600px;">
+        <div class="navbar-header" >
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavbar" style="border-color:white;">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'home' %}">RiskyNumber</a>
+        </div>
+        <div class="collapse navbar-collapse" id="topNavbar" >
+          <!-- id is for ajax -->
+          <ul class="nav navbar-nav">
+            <!-- <li><a class="nav-item nav-link" href="{% url "home" %}" style="color:rgb(0, 60, 77);font-size: 16px;">
+                                                   <span class="glyphicon glyphicon-home"></span></a></li> -->
+            <!-- these three uses ajax call -->
+            <li><a class="nav-item nav-link" href="{% url 'stocks:stkindex' '^GSPC' %}" id="^GSPC">S&P 500</a></li>
+            <li><a class="nav-item nav-link" href="{% url 'stocks:stkindex' '^DJI' %}" id="^DJI">DJI</a></li>
+            <li><a class="nav-item nav-link" href="{% url 'stocks:stkindex' '^IXIC' %}" id="^IXIC">Nasdaq</a></li>
+            <!-- put search here later
+            -->
+          </ul>
+          <ul class="nav navbar-nav navbar-right" >
+            <!-- <li>
+              <a class="nav-item nav-link" style="color:rgb(0, 60, 77);"
+                href="#">EDA</a>
+            </li> -->
+            <li id="news_menu">
+              <a class="nav-item nav-link" href="#">News</a>
+            </li>
+          {% if user.is_authenticated %}
+            <li class="dropdown" id="watchlist_menu">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">WatchList
+                <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li> <a id="mywatchlist" href="#">MyWatchlist</a> </li>
+                  <li> <a id="add_to_list" href="#">AddToList</a> </li>
+                </ul>
+            </li>
+            <!-- <li>
+              <a class="nav-item nav-link" style="color:rgb(0, 60, 77);"
+                  href="{% url 'accounts:profile' %}">Profile</a>
+            </li> -->
+            <li>
+              <a class="nav-item nav-link" href="{% url 'accounts:signout' %}">Logout</a>
+            </li>
+          </ul>
+            {% else %}
+            <ul class="nav navbar-nav navbar-right">
+                <li id="authenticate_watchlist">
+                  <a class="nav-item nav-link" href="#">WatchList</a>
+                </li>
+                <!-- <li><a href="#"> -->
+                <li><a data-toggle="modal" href="#signupModal">
+                    <span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                <!--<li><a href="#"> -->
+                <li><a data-toggle="modal"  href="#loginModal">
+                    <span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            </ul>
+            {% endif %}
+        </div>
+      </div>
+    </nav>
+
+    <!-- login modal starts -->
+
+    <div class="container">
+
+    <!-- Modal -->
+    <div class="modal fade" id="loginModal" role="dialog">
+        <div class="modal-dialog">
+
+      <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="padding:35px 50px;background-color:rgb(0, 163, 204);">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 style="background-color:rgb(0, 163, 204);"><span class="glyphicon glyphicon-lock"></span> Login</h4>
+                </div>
+                <div class="modal-body" style="padding:40px 50px;">
+                    <div id="user_login">
+                        <!--if not using ajax, need to provide 'action' attribute -->
+                        <form id="loginForm" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="id_login_username"><span class="glyphicon glyphicon-user"></span> Username</label>
+                                <input type="text" class="form-control" id="id_login_username" name="login_username" placeholder="Enter Username">
+                            </div>
+                            <div class="form-group">
+                                <label for="id_login_password"><span class="glyphicon glyphicon-eye-open"></span> Password</label>
+                                <input type="password" class="form-control" id="id_login_password" name="login_password" placeholder="Enter password">
+                            </div>
+                            <div class="checkbox">
+                                <label><input type="checkbox" value="">Remember me</label>
+                            </div>
+                            <button type="submit" id="loginBtn" class="btn btn-success btn-block" style="background-color:rgb(0, 163, 204);">
+                            <span class="glyphicon glyphicon-off"></span> Login</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary pull-left" onclick="clearLoginForm()"
+                                style="background-color:rgb(0, 163, 204); width:80px;">Reset</button>
+                    <label>Not a member? <button id="openSignUp" type="button" class="btn btn-info"
+                                                      data-dismiss="modal">Sign Up</button></label>
+                    <p>Forgot <a href="#">Password?</a></p>
+                </div>
+            </div>
+          </div>
+    </div>
+    </div>
+    <!-- log-in modal end -->
+
+    <!-- signup modal starts -->
+
+    <div class="container">
+    <!-- Modal -->
+        <div class="modal fade" id="signupModal" role="dialog">
+            <div class="modal-dialog">
+
+            <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header" style="padding:35px 50px;background-color:rgb(0, 163, 204);">
+                        <button type="button" class="close" data-dismiss="modal" >&times;</button>
+                        <h4 style="background-color:rgb(0, 163, 204);">
+                            <span  class="glyphicon glyphicon-lock"></span>Sign Up</h4>
+                    </div>
+                    <div class="modal-body" style="padding:40px 50px;">
+                        <div id="user_registration">
+                           <!--don't need action="{% url 'accounts:signup' %}" for ajax-->
+                            <form class="form-horizontal" id="signupForm" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                <div class="form-group">
+                                    <label class="control-label col-md-3" for="id_username">Username:</label>
+                                    <div class="col-md-9">
+                                        <input class="form-control" id="id_username" maxlength="30"
+                                            name="username" type="text" placeholder="Enter Username" required/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3" for="id_password">Password:</label>
+                                    <div class="col-md-9" id="signin_passwd">
+                                        <input class="form-control" id="id_password" name="password"
+                                            type="password" placeholder="Enter password" required/>
+                                        <!-- <span class="helptext">
+                                            30 characters or less. Alphanumeric, @, ., +, -, and _ only.
+                                        </span> -->
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3" for="id_password2">
+                                            Verify:</label>
+                                    <div class="col-md-9">
+                                        <input class="form-control" id="id_password2" name="password2" placeholder="Re-enter above password"
+                                           type="password"/>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3" for="id_first_name">First Name:</label>
+                                    <div class="col-md-9">
+                                        <input class="form-control" id="id_first_name" name="first_name"
+                                            type="text" placeholder="Enter First Name"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3" for="id_last_name">Last Name:</label>
+                                    <div class="col-md-9">
+                                        <input class="form-control" id="id_last_name" name="last_name"
+                                            type="text" placeholder="Enter Last Name"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-md-3" for="id_email">
+                                            E-mail:</label>
+                                    <div class="col-md-9">
+                                        <input class="form-control" id="id_email" name="email" type="email"
+                                            placeholder="Enter valid email" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-3 col-md-9">
+                                        <button type="submit" id="signupBtn" class="btn btn-primary"
+                                            style="background-color:rgb(0, 163, 204); width:80px;">Submit</button>
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-left" onclick="clearSignupForm()"
+                                              style="background-color:rgb(0, 163, 204); width:80px;">Reset</button>
+                        <label>A member? <button id="openLogin" type="button" class="btn btn-info"
+                                                      data-dismiss="modal">Login</button></label>
+
+                      <!--
+                      <p>Forgot <a href="#">Password?</a></p>
+                      -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- singup modal end -->
+    <!--  trending div begins-->
+    <div class="container" style="max-width:1600px;">
+      <div class="row" id="trendTable" style="padding: 5px 0px 0px 0px;">
+        <div class="col-xs-12">
+          <table style="border-collapse: collapse; width: 100%;">
+            <tr id='trendRow' style="text-align:center;">
+                <td style="font-size:18px; background-color: rgb(100,0,0); text-align: center; color: rgb(0,255,0);border-radius:10px 10px 10px 10px;">
+                    Trending:</td>
+                <script>
+                  var trendWidth = document.getElementById("trendTable").parentElement.clientWidth;
+                  // global var used in resizeTrend
+                  var colNum = parseInt(trendWidth/60);
+                  var trendCell = document.getElementById("trendRow");
+                  var trending = {{ trending | safe }};
+                  var trendType = {{ trendType | safe}};
+                  // global var used in resizeTrend
+                  var tikNum = trending.length;
+                  if (tikNum < colNum){
+                      colNum = tikNum;
+                  }
+                  for ( i = 0; i < colNum; i++){
+                    var x = trendCell.insertCell(-1);
+                    x.innerHTML = "<a id= " + trending[i] + " href = '/stocks/" + trending[i].toLowerCase() + "/' " + " style= 'color:" + trendType[i] +";'>" + trending[i] + "</a>";
+                  }
+                </script>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <hr style="margin:5px 0px 0px 0px;" />
+    </div>
+    <!-- trending div end and ticker div begins -->
+    <div class="container contentDiv" style="max-width:1600px; z-index:1;">
+        <div class="row">
+            <div class="col-md-4" style="z-index: 1;">
+                <form id = "tickerForm" method="get">
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </div>
+                        <input class="search-query form-control" type="text"
+                            placeholder="Search Symbol" name="suggestion" value=""
+                            id="suggestion" autofocus/>
+                    </div>
+                </form>
+                <!-- ajax call -->
+                <div id="suggested_list" style="z-index:2;">
+                    {% if stocks %}
+                        {% include 'stocks/ticker.html' with stocks=stock_list %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-8" style="z-index:1; padding-left: 0px;">
+              <div class="rt_quote" >
+                <table style="border-collapse: collapse;">
+                  <tr id='trendRow' style="text-align:center;">
+                    <td class="rt" id="add_tik" data-toggle="tooltip" title="Add to Watchlist"
+                            style="padding:5px 5px 0px 0px;color:rgb(0, 200, 0); cursor: pointer;"></td>
+                    <td class="rt" id="tik" style="padding:3px 0px 0px 0px;font-weight: bold;font-size:18px;"></td>
+                    <td class="rt" id="lp" style="padding:5px 5px 0px 5px;"></td>
+                    <td style="padding:5px 0px 0px 0px;"><span id="udarrow"></span></td>
+                    <td class="rt" id="chg" style="padding:5px 5px 0px 5px;"></td>
+                    <td class="rt" id="cp" style="padding:5px 5px 0px 5px;"></td>                    
+                    <td class="rt" id="lt" style="padding:5px 5px 0px 0px;"></td>
+                    <td class="rt" id="lh" style="padding:5px 5px 0px 60px;"></td>
+                    
+                    
+                  </tr>
+                </table>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container contentDiv" style="max-width:1600px; z-index:0;">
+        <div class="row" style="margin:0px 0px 0px 0px;" >
+                {% block chart_block %}
+                {% endblock %}
+
+        </div>
+    </div>
+
+    <div class="container contentDiv" id="watchlist_div" style="max-width:1600px;">
+      {% block watchlist_block %}
+      {% endblock %}
+    </div>
+    <div class="container contentDiv" id="news_div" style="max-width:1600px;color:rgb(0, 153, 204);">
+        <div class="row">
+            <div class="col-md-6" id="stock_news">
+                {% block stock_news %}
+                {% endblock %}
+            </div>
+            <div class="col-md-6" id="business_news">
+                {% block business_news %}
+                {% endblock %}
+            </div>
+        </div>
+        <hr>
+    </div>
+    <footer class="container contentDiv" style="max-width:1600px;background-color:white;min-height:100px;">
+      <div class="" style="background-color: rgb(0, 153, 204);padding:25px 0px 0px 0px;border-radius:10px 10px 10px 10px;
+                           height:300px;">
+        <div  style="background-color:white; padding:10px 20px 10px 20px;border-radius:50px 50px 50px 50px; ">
+            <div>
+              <ul class="list-inline" style="margin: 0px 0px 0px 0px;">
+                <li> <a href="{% url 'about' %}"><h5 class="h5-font">ABOUT</h5></a></li>
+                <li style="color:#00b8ff; font-size: 1.5em;"> &#9474; </li>
+                <li> <a href="{% url 'howto' %}"><h5 class="h5-font">HOW TO</h5></a></li>
+              </ul>
+            </div>
+            <div  style="padding-top:0px;">
+              <h5 style="color: rgb(0, 153, 204); margin-bottom: 0px;">Find useful? Share it on:</h5>
+              <table>
+                <tr>
+                  <td style="padding:0px 5px 3px 5px;">
+                    <div class="fb-share-button" data-href="http://www.riskynumber.com"
+                      data-layout="button" data-size="small" data-mobile-iframe="true">
+                      <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwww.riskynumber.com%2F&amp;src=sdkpreparse"
+                        class="fb-xfbml-parse-ignore">Share
+                      </a>
+                    </div>
+                  </td>
+                  <td style="text-align:center; padding:2px 5px 0px 0px;">
+                    <div >
+                      <a href="https://twitter.com/intent/tweet?text=Stock Research"
+                        class="twitter-share-button fa fa-twitter"
+                        data-via="sgJomsom"
+                        data-size="small"
+                        data-show-count="true">
+                      </a>
+                      <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                    </div>
+                   </td>
+                   <td style="text-align:center; padding: 0px 0px 4px 0px;">
+                     <script src="//platform.linkedin.com/in.js" type="text/javascript">lang: en_US</script>
+                     <script type="IN/Share" data-url="https://www.linkedin.com/m/login/"></script>
+                   <td>
+               </tr>
+              </table>
+
+              <p style="color:rgb(64, 128, 191, .5); font-size:0.8em; padding:0px 50px 0px 50px;">
+                All brand icons and names are trademarks of their respective owners.
+              </p>
+
+            </div>
+            <div>
+
+            </div>
+        </div>
+      </div>
+
+    </footer>
+</body>
+
+<!-- Bootstrap core JavaScript ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+<!-- custom js -->
+<script src="{% static 'js/signinoutjs.js' %}"></script>
+<script src="{% static 'js/rnchartjs.js' %}"></script>
+
+</html>

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title_block %}
+    About
+{% endblock %}
+
+{% block chart_block %}
+    <script>
+        //this is to avoid calling charting fuction in js file
+        var data_type = {{data_type}};
+    </script>
+
+    <div style="padding: 50px 50px 100px 50px;">
+        <h3 style="padding-left:20px;"><span><img src="../static/images/favicon.ico" width="20" height="20">RiskyNumber:</h3>
+        <blockquote>RiskyNumber is a web platform for financial information analytics, primarily for the stock
+        market data. This is not a commercial product. This platform is being developed for personal
+        education & research purposes only. At the moment, this platform is in it's very
+        early stages of development.<br><br>
+        The majority of information is derived from the various websites using APIs and web-scraping
+        technologies based on Python. I can't gaurantee the accuracy of financial data and other
+        information you find in this platform. I don't recommend to buy or sell any of the stocks you
+        may find in this website. I don't have any investment relationship with any of these companies.
+        In the future, the financial data and information might be imported to this app from a reliable
+        commercial sources if it is feasible. Until then, this is just an ongoing personal research project.
+        <br><br>
+        I would like to thank to all the providers of open source technologies, free APIs, tutorials,
+        and all other tools which made this project possible. I hope this app becomes a useful source
+        for the investors as it matures in future. Please visit the platform more frequently for the updates.
+        Thank you for your visit.<br><br>
+        Surya Gurung.
+        <br><br>
+
+        </blockquote>
+        <br><br>
+        <pre style="font-size:16px;">Some of Technologies used in RiskyNumber:</pre>
+        <ul style="font-size:12px;horizontal-align:center;">
+            <li>Python3.6</li>
+            <li>Django2.1.1</li>
+            <li>Pandas</li>
+            <li>Beautiful Soup4</li>
+            <li>html 5</li>
+            <li>CSS</li>
+            <li>JavaScript</li>
+            <li>jQuery</li>
+            <li>Bootstrap 3</li>
+            <li>PostgreSQL</li>
+            <li>plotly.js</li>
+            <li>D3</li>
+        </ul>
+        If you are interested, I put some basic information about how to build django app
+        like this webpage in <a href="http://www.riskyNumber.com/howto"><b>HOW TO</b></a>
+        page. For comments & suggestions, please feel free to contact me at
+        <b>riskyNumber@outlook.com</b>
+        <br><br>
+
+        <!-- <code>Useful Code Examples:</code>
+        <pre><br>Coming Soon<br></pre> -->
+
+    </div>
+{% endblock %}
+
+{% block watchlist_block %}
+{% endblock %}
+
+
+{% block stock_news %}
+{% endblock %}
+
+{% block business_news %}
+{% endblock %}

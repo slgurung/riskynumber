@@ -1,0 +1,12 @@
+<div style="position:absolute; background-color:white;
+            width:100%;opacity:0.7; z-index:5;" id="tik_list">
+  <ul style="list-style-type:None;">
+    {% for s in stocks %}
+        <li>
+            <a id="{{s.ticker}}" href="#" style="color:rgb(0,77,77);">{{s.ticker}} : {{s.name|truncatewords:3}}</a>
+            <a href="#"></a>
+        </li>
+    {% endfor %}
+
+  </ul>
+</div>

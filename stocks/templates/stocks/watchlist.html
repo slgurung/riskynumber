@@ -1,0 +1,56 @@
+
+<div class="row">
+  <div class="col-xs-6" style="padding: 0px 15px 5px 15px;">
+    <!-- don't need form method for ajax -->
+      <form  class="form-inline" id="watchlistForm">
+          <div class="input-group">
+              <div class="input-group-addon">
+                  <span class="glyphicon glyphicon-search"></span>
+              </div>
+              <input style="width:200px;" class="search-query form-control" type="text"
+                  placeholder="Search Symbol to Add" name="add_ticker" value=""
+                  id="suggested_watchlist_ticker"/>
+          </div>
+          <button id="add_ticker" type="submit" data-toggle="tooltip" data-placement="bottom" title="Add to WatchList!"
+                  style="width:80px;"class="btn btn-primary">ADD
+          </button>
+      </form>
+      <div id="add_ticker_list" style="z-index:2;">
+          {% if stocks %}
+              {% include 'stocks/ticker.html' with stocks=stock_list %}
+          {% endif %}
+      </div>
+
+  </div>
+  <div class="col-xs-6">
+    <span></span>
+  </div>
+</div>
+<div id="wl_div" style="border-color:rgb(0,150,190, .5);border-style:solid;border-width:1px;
+         margin:0px 0px 0px 0px; padding:0px 0px 0px 0px;border-radius:10px 10px 10px 10px;
+         background-color:rgb(0,170,230, .25); min-height:80px;">
+
+  <div class="row">
+    <div class="col-xs-12" style="padding: 5px 0px 0px 25px;">
+      <ul class="list-inline" id="wl_ul" style="padding: 5px 10px 10px 5px; color: rgb(0,170,230);margin:0px 5px 5px 0px;">
+        <strong class="watchlist_title"> {{watchlist_name}}</strong>
+        <span class="glyphicon glyphicon-triangle-right wl_arrow"></span>
+
+      {% if stock_list %}
+          {% for stock in stock_list %}
+              <li class="wl_li">
+                <!-- <a> and <span> can't have same id -->
+                <a href="" id="a_{{stock.ticker}}">{{ stock.ticker }}</a>&nbsp&nbsp
+                <span id="{{stock.ticker}}" class="glyphicon glyphicon-remove-sign wl_cursor remove_tik" data-toggle="tooltip"
+                  data-placement="bottom" title="Remove!"></span>
+              </li>
+          {% endfor %}
+      {% else %}
+          <li>
+              <strong style="color: rgb(0, 102, 153);">Watchlist is empty! Add some symbols.</strong>
+          </li>
+      {% endif %}
+      </ul>
+    </div>
+  </div>
+</div>

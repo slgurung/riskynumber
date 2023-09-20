@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title_block %}
+    HowTo
+{% endblock %}
+
+{% block chart_block %}
+    <script>
+        //this is to avoid calling charting fuction in js file
+        var data_type = "{{data_type}}";
+    </script>
+
+    <div class="col-md-12">
+      <!-- this is return by new_bookmarks() function() -->
+      <div style="padding: 20px 60px 20px 60px;">
+        <h3 class="h4-font">How to build a django-app like this webpage?</h3>
+        <strong>Introduction:</strong>
+        <p>Obviously, there are many ways to build website like this one. I am going to show you the basic steps and tools
+          I used for this project. First, let me list some of the resources that I used frequently for this project.</p>
+          <ul>
+            <li><a href="https://docs.python.org/3/" target="_blank">Official Python documentation</a></li>
+            <li><a href="https://docs.djangoproject.com/en/2.1/" target="_blank">Django's documentation</a></li>
+            <li><a href="https://stackoverflow.com" target="_blank">StackOverflow</a></li>
+            <li><a href="https://www.w3schools.com/" target="_blank">w3Schools</a></li>
+            <li><a href="http://pandas.pydata.org/pandas-docs/version/0.23/" target="_blank">Pandas documentation</a></li>
+          </ul>
+          If you are new to Django, I think <a href="https://docs.djangoproject.com/en/2.1/intro/">Django's tutorial</a> is
+          the best place to start. I also started at django's tutorial and then got more comfortable
+          following a book titled <a href="https://www.tangowithdjango.com/book17/">"How To Tango With Django"</a> which is
+          freely available online. There are many other books are available free in pdf format. But as I got more
+          comfortable, I actually started to go through the <a href="https://docs.djangoproject.com/en/2.1/" target="_blank">
+          django's documentation</a>. Probably, <a href="https://stackoverflow.com" target="_blank">StackOverflow</a> is
+          the tool I use the most specially when the project was not working. Most of the time it got some sort of
+          solution to the problem. For html, CSS, JavaScript, jQuery, Bootstrap, I use
+          <a href="https://www.w3schools.com/" target="_blank">w3Schools</a>, it is the best.
+          For this project, <a href="https://docs.python.org/3/" target="_blank">Python</a> is the main backend laguage.
+          There are many free online tutorials to learn python. Frequently, I found some nice tutorials at
+          <a href="https://realpython.com/" target="_blank">Real Python Tutorials</a>. You may find this website very useful to learn
+          python. Pandas is a data analysis package for python programming. If you are new, take a look at
+          <a href="http://pandas.pydata.org/pandas-docs/version/0.24/getting_started/10min.html" target="_blank">
+          a quick tutorial</a>.
+          <br>
+          <br>
+          <strong>Installation & Initial Setup:</strong>
+          <p>Since I am using a <b>linux device</b>, these are the installation steps in a linux enviroment. The list
+            of the python packages that need to be installed for this project is:
+          </p>
+            <ul>
+              <li> <code>python3.6</code> </li>
+              <li> <code>virtualenv</code> </li>
+              <li> <code>django2.1.5</code> </li>
+              <li> <code>pillow</code> </li>
+              <li> <code>psycopg2</code> </li>
+            </ul>
+            <span>optional:</span>
+            <ul>
+              <li> <code>faker</code> </li>
+              <li> <code>misaka</code> </li>
+              <li> <code>django[argon2]</code> </li>
+              <li> <code>django[bcrypt]</code> </li>
+              <li> <code>django-debug-toolbar</code> </li>
+              <li> <code>nose</code> </li>
+            </ul>
+          <p>
+            First, install python in linux enviroment if it isn't already?.<br>
+            <pre>
+              sudo apt-get update
+              sudo apt-get install python3.6
+            </pre>
+            Lets create a project folder, lets call it <b>'project_dir'</b> and cd into it, install virtualenv:
+            <pre>
+              $ mkdir project_dir
+              $ cd project_dir
+              $ pip install virtualenv
+            </pre>
+            Create a virtual enviroment and activate it:
+            <pre>
+              $ virtualenv --python=python3.6 env_name
+              $ source env_name/bin/activate
+            </pre>
+            Install django:
+            <pre>
+              (env_name)$ pip install pip install Django==2.1.5
+            </pre>
+            Install pillow and psycopg2:
+            <pre>
+              (env_name)$ pip install pillow psycopg2-binary
+            </pre>
+            So, this is how most of the packages are installed. As you needed, install
+            the other packages. Now start a django project named "myproject":
+            <pre>
+              (env_name)$ django-admin startproject myproject
+            </pre>
+            It creates a project folder name "myproject" with a file "manage.py" and a folder "myproject".
+            Now, let create first django app called "accounts". Also, create two folders, "templates" &
+            "static". Inside static, create "css", "js" and "images as folder.
+            <pre>
+              (env_name)$ cd myproject
+              (env_name)$ django-admin startapp accounts
+            </pre>
+            Lets take a look at the directory structure:
+            <ul>
+              <li><b>project_dir</b>
+                <ul>
+                  <li><b>env_name</b></li>
+                  <li><b>myproject</b>
+                  <ul>
+                      <li><b>myproject</b>
+                        <ul>
+                          <li>__init__.py</li>
+                          <li>settings.py</li>
+                          <li>urls.py</li>
+                          <li>wsgi.py</li>
+                        </ul>
+                      </li>
+                      <li>manage.py</li>
+                      <li><b>accounts</b>
+                        <ul>
+                          <li>__init__.py</li>
+                          <li>admin.py</li>
+                          <li>apps.py</li>
+                          <li>models.py</li>
+                          <li>tests.py</li>
+                          <li>views.py</li>
+                        </ul>
+                      </li>
+                      <li><b>templates</b>
+                      </li>
+                      <li><b>static</b>
+                        <ul>
+                          <li><b>css</b></li>
+                          <li><b>js</b></li>
+                          <li><b>images</b></li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+
+            This is the basic initial setup I did before starting the real coding.
+            <h3>Coding Section Coming soon</h3>
+
+            <br><br>
+            <span>For comments & suggestions, please feel free to contact me at
+            <b>riskyNumber@outlook.com</b></span>
+
+      </div>
+    </div>
+{% endblock %}
+
+{% block watchlist_block %}
+{% endblock %}
+
+
+{% block stock_news %}
+{% endblock %}
+
+{% block business_news %}
+{% endblock %}

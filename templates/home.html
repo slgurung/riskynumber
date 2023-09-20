@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+{% block title_block %}
+    RiskyNumber
+{% endblock %}
+
+
+{% block chart_block %}
+  <div class="col-md-12" id="chart_tab_div" style="border-color:rgb(0,150,190, .5);border-style:solid;border-width:1px;
+           margin:0px 0px 0px 0px; padding:0px 0px 0px 0px;border-radius:10px 10px 10px 10px;
+           background-color:rgb(242, 242, 242);">
+    <div style="padding:3px 2px 5px 2px;">
+          <!-- make sure no other nav-tabs, this is used in js file -->
+          <ul class="nav nav-tabs" style="background-color:rgb(242, 242, 242);">
+              <li class="active" style="width:30%;text-align:center;"><a id="scatter"  href="#line" ></a></li>
+              <li style="width:30%;text-align:center;"><a id="candlestick" href="#candle">CandleStick</a></li>
+              <li style="width:30%;text-align:center;"><a id="filingList" href="#filing">Filings</a></li>
+          </ul>
+          <div class="tab-content" id="chartTab" style="background-color:rgb(242, 242, 242);">
+              <div id="line" class="tab-pane fade in active"></div>
+              <div id="candle" class="tab-pane fade"></div>
+              <div id="filing" class="tab-pane fade table-responsive" style="background-color:white;"></div>
+              <!-- for chart period id row -->
+              <div class="histChart" style="padding:5px 0px 0px 20px;">
+                  <ul class="list-inline">
+                      <li><a id="1D" href="#" style="color: rgb(170,0,0);">1D</a></li>
+                      <li><a id="5D" href="#" style="color: rgb(0,170,0);">5D</a></li>
+                      <li><a id="1M" href="#" style="color: rgb(0,170,0);">1M</a></li>
+                      <li><a id="3M" href="#" style="color: rgb(0,170,0);">3M</a></li>
+                      <li><a id="6M" href="#" style="color: rgb(0,170,0);">6M</a></li>
+                      <li><a id="YTD" href="#" style="color: rgb(0,170,0);">YTD</a></li>
+                      <li><a id="1Y" href="#" style="color: rgb(0,170,0);">1Y</a></li>
+                      <li><a id="2Y" href="#" style="color: rgb(0,170,0);">2Y</a></li>
+                      <li><a id="5Y" href="#" style="color: rgb(0,170,0);">5Y</a></li>
+                      <!-- <li><a id="MAX" href="#" style="color: rgb(0,170,0);">Max</a></li> -->
+                  </ul>
+              </div>
+          </div>
+      </div>
+
+      <script>
+         
+        var chartPeriod = "{{chartperiod|safe}}";
+        var chartType = "scatter";
+        var symbol = "{{ ticker|safe }}";
+        var name = "{{ name|safe }}";
+        var start = "{{start|safe}}";
+        var end = "{{end|safe}}";
+        var dateVal = {{ date|safe }};
+
+                //.map(function(d) {return new Date(d);});
+        var min = {{ min }};
+        var max = {{ max }};
+        var openVal = {{ open }};
+        var highVal = {{ high }};
+        var lowVal = {{ low }};
+        var closeVal = {{ close }};
+        var vol = {{ vol }};
+        var tickpos = "{{tickpos|safe}}";
+        var tick_text = "{{tick_text|safe}}";
+        var data_type = "{{data_type}}";
+
+        var chartTab = document.getElementById('chartTab');
+        var lineTab = document.getElementById('line'); //glbal var
+        var candleTab = document.getElementById('candle');
+        var filingTab = document.getElementById('filing');
+
+        //change to json for fuction call
+        var qinfo = {'changecolor':"{{changecolor|safe}}",
+                        'changesymbol':"{{changesymbol|safe}}",
+                        'changePercent':"{{changePercent|safe}}",
+                        'change':"{{change|safe}}",
+                        'latestPrice':"{{latestPrice|safe}}",
+                        'week52High':"{{week52High|safe}}",
+                        'week52Low':"{{week52Low|safe}}",
+                        'latestTime':"{{latestTime|safe}}"}
+
+      </script>
+  </div>
+{% endblock %}
+
+{% block watchlist_block %}
+  {% if user.is_authenticated %}
+    <div class="row">
+      <div class="col-xs-6" style="padding: 0px 15px 5px 15px;">
+        <!-- don't need form method for ajax -->
+          <form  class="form-inline" id="watchlistForm">
+              <div class="input-group">
+                  <div class="input-group-addon">
+                      <span class="glyphicon glyphicon-search"></span>
+                  </div>
+                  <input style="width:200px;" class="search-query form-control" type="text"
+                      placeholder="Search Symbol to Add" name="add_ticker" value=""
+                      id="suggested_watchlist_ticker"/>
+              </div>
+              <button id="add_ticker" type="submit" data-toggle="tooltip" data-placement="bottom" title="Add to WatchList!"
+                      style="width:80px;"class="btn btn-primary">ADD
+              </button>
+          </form>
+          <!--div to display list of releveant stocks symbols to add to watchlist with ajax -->
+          <div id="add_ticker_list" style="z-index:2;">
+              {% if stocks %}
+                  {% include 'stocks/ticker.html' with stocks=stock_list %}
+              {% endif %}
+          </div>
+
+      </div>
+      <div class="col-xs-6">
+        <span></span>
+      </div>
+    </div>
+    <div id="wl_div" style="border-color:rgb(0,150,190, .5);border-style:solid;border-width:1px;
+             margin:0px 0px 0px 0px; padding:0px 0px 0px 0px;border-radius:10px 10px 10px 10px;
+             background-color:rgb(0,170,230, .25); min-height:80px;">
+
+      <div class="row">
+        <div class="col-xs-12" style="padding: 5px 0px 0px 25px;">
+          <ul class="list-inline" id="wl_ul" style="padding: 5px 10px 10px 5px; color: rgb(0,170,230);margin:0px 5px 5px 0px;">
+            <strong class="watchlist_title"> {{watchlist_name}}</strong>
+            <span class="glyphicon glyphicon-triangle-right wl_arrow"></span>
+          {% if stock_list %}
+              {% for stock in stock_list %}
+                  <li class="wl_li">
+                    <!-- <a> and <span> can't have same id -->
+                    <a href="" id="a_{{stock.ticker}}">{{ stock.ticker }}</a>&nbsp&nbsp
+                    <span id="{{stock.ticker}}" class="glyphicon glyphicon-remove-sign wl_cursor remove_tik" data-toggle="tooltip"
+                      data-placement="bottom" title="Remove!"></span>
+                  </li>
+              {% endfor %}
+          {% else %}
+              <li>
+                  <strong style="color: rgb(0, 102, 153);">Watchlist is empty! Add some symbols.</strong>
+              </li>
+          {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block stock_news %}
+    <div class="jumbotron" style="padding:10px 10px 10px 20px; background-color: rgb(179, 236, 255);
+    margin:auto;"><strong>The Street's views on Stocks:</strong>
+    </div>
+    <script>
+        var news = {{ stockNews|safe }};
+        var ul = document.createElement("UL");
+        ul.setAttribute("id", "stockNewsTitle");
+
+        document.getElementById("stock_news").appendChild(ul);
+        for(i =0; i < news.length; i++){
+            var li = document.createElement("LI");
+            var a = document.createElement("A");
+            li.appendChild(a);
+            var newsTitle = document.createTextNode(news[i]["title"]);
+            a.setAttribute("href", news[i]["link"]);
+            a.setAttribute("target", "_blank");
+            a.appendChild(newsTitle);
+            document.getElementById("stockNewsTitle").appendChild(li);
+        }
+
+    </script>
+{% endblock %}
+
+{% block business_news %}
+    <div class="jumbotron" style="padding:10px 10px 10px 20px; background-color: rgb(179, 236, 255);
+    margin:auto;"><strong>What is making headline today?</strong>
+    </div>
+    <script>
+        var news = {{ businessNews|safe }};
+        var ul = document.createElement("UL");
+        ul.setAttribute("id", "bizNewsTitle");
+        ul.setAttribute("class", "bizNews");
+        document.getElementById("business_news").appendChild(ul);
+        for(i =0; i < news.length; i++){
+            var li = document.createElement("LI");
+            var a = document.createElement("A");
+            li.appendChild(a);
+            var newsTitle = document.createTextNode(news[i]["title"]);
+            a.setAttribute("href", news[i]["link"]);
+            a.setAttribute("target", "_blank");
+            a.appendChild(newsTitle);
+            document.getElementById("bizNewsTitle").appendChild(li);
+        }
+
+    </script>
+
+{% endblock %}
