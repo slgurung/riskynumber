@@ -891,12 +891,14 @@ $(document).ready(function() {
         }
       });
     });
+    ///////////// removed from base.html////////////
     //scroll to news div wilth click on news menubar
-    $("#news_menu").on('click', function() {
-      $('html, body').animate({
-        'scrollTop': $("#news_div").position().top
-      });
-    });
+    // $("#news_menu").on('click', function() {
+    //   $('html, body').animate({
+    //     'scrollTop': $("#news_div").position().top
+    //   });
+    // });
+    /////////////////////////////////////////////
 
     $(window).resize(function(){
         trendWidth = document.getElementById("trendTable").parentElement.clientWidth;
