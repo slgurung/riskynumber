@@ -15,11 +15,13 @@
         <ul class="nav nav-tabs" style="background-color:rgb(242, 242, 242);">
             <li class="active" style="width:30%;text-align:center;"><a id="scatter"  href="#line" ></a></li>
             <li style="width:30%;text-align:center;"><a id="candlestick" href="#candle">CandleStick</a></li>
+            <li style="width:25%;text-align:center;"><a id="stkNews" href="#news">News</a></li>
             <li style="width:30%;text-align:center;"><a id="filingList" href="#filing">Filings</a></li>
         </ul>
         <div class="tab-content" id="chartTab" style="background-color:rgb(242, 242, 242);">
             <div id="line" class="tab-pane fade in active"></div>
             <div id="candle" class="tab-pane fade"></div>
+            <div id="news" class="tab-pane fade table-responsive" style="background-color:white;"></div>
             <div id="filing" class="tab-pane fade table-responsive" style="background-color:white;"></div>
             <!-- for chart period id row -->
             <div class="histChart" style="padding:5px 0px 0px 20px;">
@@ -79,53 +81,4 @@
   {% if user.is_authenticated %}
     {% include 'stocks/watchlist.html' %}
   {% endif %}
-{% endblock %}
-
-{% block stock_news %}
-    <div class="jumbotron" style="padding:10px 10px 10px 20px; background-color: rgb(179, 236, 255);
-    margin:auto;"><strong>The Street's views on Stocks:</strong>
-    </div>
-    <script>
-        var news = {{ stockNews|safe }};
-        var ul = document.createElement("UL");
-        ul.setAttribute("id", "stockNewsTitle");
-
-        document.getElementById("stock_news").appendChild(ul);
-        for(i =0; i < news.length; i++){
-            var li = document.createElement("LI");
-            var a = document.createElement("A");
-            li.appendChild(a);
-            var newsTitle = document.createTextNode(news[i]["title"]);
-            a.setAttribute("href", news[i]["link"]);
-            a.setAttribute("target", "_blank");
-            a.appendChild(newsTitle);
-            document.getElementById("stockNewsTitle").appendChild(li);
-        }
-
-    </script>
-{% endblock %}
-
-{% block business_news %}
-    <div class="jumbotron" style="padding:10px 10px 10px 20px; background-color: rgb(179, 236, 255);
-    margin:auto;"><strong>What is making headline today?</strong>
-    </div>
-    <script>
-        var news = {{ businessNews|safe }};
-        var ul = document.createElement("UL");
-        ul.setAttribute("id", "bizNewsTitle");
-        ul.setAttribute("class", "bizNews");
-        document.getElementById("business_news").appendChild(ul);
-        for(i =0; i < news.length; i++){
-            var li = document.createElement("LI");
-            var a = document.createElement("A");
-            li.appendChild(a);
-            var newsTitle = document.createTextNode(news[i]["title"]);
-            a.setAttribute("href", news[i]["link"]);
-            a.setAttribute("target", "_blank");
-            a.appendChild(newsTitle);
-            document.getElementById("bizNewsTitle").appendChild(li);
-        }
-
-    </script>
-
 {% endblock %}
